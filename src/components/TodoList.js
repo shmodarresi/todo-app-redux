@@ -1,32 +1,14 @@
-import React , {useState} from 'react';
+import React from 'react';
 import AddTodo from './AddTodo';
 import Todo from './Todo';
 
-const TodoList = () => {
-    const [todos, setTodos] = useState([]);
+import {connect} from 'react-redux';
+import { deleteTodo , deleteAllTodo, toggleTodo} from '../actions';
 
-    const addNewTodo = (todo) => {
-        setTodos([...todos, todo]);
-    }
-
-    const toggleTodoClick = id => {
-        setTodos(todos.map(todo => {
-            if (todo.id === id) {
-                return { ...todo, completed: !todo.completed }
-            }else{
-                return todo
-            }
-
-        }));
-    }
-
-    const deleteTodoClick = id => {
-        setTodos(todos.filter(todo => todo.id !== id));
-    }
-
+const TodoList = ({todos, deleteTodoClick, toggleTodoClick, deleteAllTodoClick}) => {
     return (
         <div>
-            <AddTodo onSubmit={addNewTodo} />
+            <AddTodo />
             <ul className="todo-list">
                 {
                     todos.map(i => <Todo 
@@ -37,9 +19,31 @@ const TodoList = () => {
                 }
             </ul>
 
-            {todos.length > 1 && <div className="btn-row" onClick={() => setTodos([])}>clear all <span className="icon-trash"></span></div>}
+            {todos.length > 1 && <div className="btn-row" onClick={() => deleteAllTodoClick()}>clear all <span className="icon-trash"></span></div>}
         </div>
     );
 };
 
-export default TodoList;
+const mapStateToProps = (state) =>{
+    return {
+        todos: state
+    }
+}
+
+const mapDispatchToProps = dispatch => {
+    return {
+        deleteTodoClick: (id) => {
+            dispatch(deleteTodo(id));
+        },
+
+        toggleTodoClick: (id) => {
+            dispatch(toggleTodo(id));
+        },
+
+        deleteAllTodoClick: () => {
+            dispatch(deleteAllTodo());
+        }
+    }
+}
+
+export default connect(mapStateToProps,mapDispatchToProps)(TodoList);

@@ -1,5 +1,7 @@
 import React , {useState} from 'react';
-import shortid from 'shortid';
+
+import {connect} from 'react-redux';
+import {addTodo} from '../actions';
 
 const AddTodo = props => {
     const [term , setTerm]= useState('');
@@ -12,11 +14,7 @@ const AddTodo = props => {
             return null
         }
 
-        props.onSubmit({
-            id: shortid.generate(),
-            text: term,
-            completed: false
-        })
+        props.dispatch(addTodo(term));
 
         setTerm('');
     }
@@ -31,4 +29,4 @@ const AddTodo = props => {
     );
 };
 
-export default AddTodo;
+export default connect()(AddTodo);
